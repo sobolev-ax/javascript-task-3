@@ -4,7 +4,58 @@
  * Сделано задание на звездочку
  * Реализовано оба метода и tryLater
  */
-exports.isStar = true;
+exports.isStar = false;
+
+
+/**
+ * 
+ * @param {Array} days ['ПН', 'ВТ', 'СР']
+ * @param {Object} schedule {Name: {from: '10:00+5', to: '18:00+5'}}
+ * @returns {Object} Interval(s) {Name: {'ПН': [], 'ВТ': [], 'СР': []}}
+ */
+function toIntervalsEmpty(days, schedule) {
+    var names = Object.keys(schedule);
+    var intervals = {};
+
+    for (var i = 0; i < names.length; i++) {
+        var name = names[i];
+
+        intervals[name] = {};
+        // Name: {}
+
+        for (var j = 0; j < days.length; j++) {
+            var day = days[j];
+
+            intervals[name][day] = [];
+            // Name: {'ПН': [], 'ВТ': [], 'СР': []}
+        }
+    }
+
+    return intervals;
+}
+// Danny: [
+//  { from: 'ПН 09:00+3', to: 'ПН 14:00+3' },
+//  { from: 'ПН 21:00+3', to: 'ВТ 09:30+3' },
+// ]
+
+// Danny: {
+//  'ПН': [ { from: 'ПН 09:00+3', to: 'ПН 14:00+3' } ],
+//  'ВТ': [ { from: 'ПН 21:00+3', to: 'ВТ 09:30+3' } ],
+//  'СР': []
+// }
+function toIntervalsFill(days, schedule) {
+    var names = Object.keys(schedule);
+    var intervals;
+
+    intervals = toIntervalsEmpty(days, schedule);
+    intervals = toIntervalsEmpty(days, schedule);
+
+
+    console.log('-\\/------------');
+    console.info(intervals);
+    console.log('-/\\------------');
+    return intervals;
+}
 
 /**
  * @param {Object} schedule – Расписание Банды
@@ -16,7 +67,9 @@ exports.isStar = true;
  */
 exports.getAppropriateMoment = function (schedule, duration, workingHours) {
     console.info(schedule, duration, workingHours);
-
+    var days = ['ПН', 'ВТ', 'СР'];
+    var intervalsGang = toIntervalsFill(days, schedule);
+    var intervalsBank = toIntervalsFill(days, {Bank: workingHours});
     return {
 
         /**
