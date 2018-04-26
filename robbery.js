@@ -5,15 +5,15 @@
  * Реализовано оба метода и tryLater
  */
 exports.isStar = true;
+
 function getNextDay(day, days) {
     var index = Number(days.indexOf(day)) + 1;
     var nextDay = days[index];
 
     if (nextDay === undefined) {
         return '';
-    } else {
-        return nextDay;
     }
+    return nextDay;
 }
 function getPrevDay(day, days) {
     var index = Number(days.indexOf(day)) - 1;
@@ -21,9 +21,8 @@ function getPrevDay(day, days) {
 
     if (prevDay === undefined) {
         return '';
-    } else {
-        return prevDay;
     }
+    return prevDay;
 }
 function getUTC(time) {
     return Number(time.match(/[+][\d]{1,2}/));
@@ -38,12 +37,6 @@ function getDay(time) {
     return String(time.match(/[А-Я]{2}/));
 }
 
-/**
- * 
- * @param {Array} days ['ПН', 'ВТ', 'СР']
- * @param {Object} schedule {Name: {from: '10:00+5', to: '18:00+5'}}
- * @returns {Object} Interval(s) {Name: {'ПН': [], 'ВТ': [], 'СР': []}}
- */
 function toIntervalsEmpty(days, schedule) {
     var names = Object.keys(schedule);
     var intervals = {};
@@ -52,25 +45,17 @@ function toIntervalsEmpty(days, schedule) {
         var name = names[i];
 
         intervals[name] = {};
-        // Name: {}
 
         for (var j = 0; j < days.length; j++) {
             var day = days[j];
 
             intervals[name][day] = [];
-            // Name: {'ПН': [], 'ВТ': [], 'СР': []}
         }
     }
 
     return intervals;
 }
-/**
- * To Intervals Fill
- * @param {Array} days ['ПН', 'ВТ', 'СР']
- * @param {Object} schedule {Name: [{from: '10:00+5', to: '18:00+5'}, {...}], Name: [{...}]}
- * @param {Object} intervalsEmpty {Name: {'ПН': [], 'ВТ': [], 'СР': []}, Name: {...}}
- * @return {Object} Interval {Name: {'ПН': [{from: 100, to: 200}, {...}], 'ВТ': [...], 'СР': []}, Name: {...}}
- */
+
 function toIntervalsFill(days, schedule, intervalsEmpty, utc) {
     var names = Object.keys(intervalsEmpty);
 
@@ -87,14 +72,6 @@ function toIntervalsFill(days, schedule, intervalsEmpty, utc) {
     
     return intervalsEmpty;
 }
-/**
- * To Minutes
- * @param {Object} hours {from: '10:00+5', to: '18:00+5'} || {from: 'ПН 12:00+5', to: 'СР 09:30+3'}
- * @param {Array} days ['ПН', 'ВТ', 'СР']
- * @param {Number} utc +12
- * @param {Object} dist {'ПН': [], 'ВТ': [], 'СР': []}
- * @return {Object} {'ПН': [{from: '100', to: '200'}, {...}], 'ВТ': [...], 'СР': [...]}
- */
 function toMinutes(hours, days, utc, dist) {
     var result = Object.assign({}, dist);
     var keys = Object.keys(hours); // from, to
@@ -113,9 +90,9 @@ function toMinutes(hours, days, utc, dist) {
             var nextDay = getNextDay(d, days);
 
             if (nextDay === '') {
-                if (i === 0) { // from
+                if (i === 0) {
                     break;
-                } else if (i === 1) { // to
+                } else if (i === 1) {
                     h = 23;
                     m = 59;
                 }
@@ -127,10 +104,10 @@ function toMinutes(hours, days, utc, dist) {
             var prevDay = getPrevDay(d, days);
 
             if (prevDay === '') {
-                if (i === 0) { // from
+                if (i === 0) {
                     h = 0;
                     m = 0;
-                } else if (i === 1) { // to
+                } else if (i === 1) {
                     break;
                 }
             } else {
@@ -152,7 +129,7 @@ function toMinutes(hours, days, utc, dist) {
         return result;
     }
 
-    if (myInterval[0] === myInterval[1]) { // ПН === ПН
+    if (myInterval[0] === myInterval[1]) {
         if (myInterval[0] === 'null') {
             var allDays = Object.keys(result);
             var t = {
@@ -206,12 +183,6 @@ function toMinutes(hours, days, utc, dist) {
 
     return result;
 }
-/**
- * To Intervals
- * @param {Array} days ['ПН', 'ВТ', 'СР']
- * @param {Object} schedule {Name: [{from: 'ПН 12:00+5', to: 'СР 09:30+3'}, {...}], Name: [{...}]}
- * @return {Object} Interval {Name: {'ПН': [{from: 100, to: 200}, {...}], 'ВТ': [...], 'СР': []}, Name: {...}}
- */
 function toIntervals(days, schedule, utc) {
     var names = Object.keys(schedule);
     var intervalsEmpty;
@@ -222,12 +193,6 @@ function toIntervals(days, schedule, utc) {
 
     return intervalsFill;
 }
-/**
- * 
- * @param {Object} intervalsBankForDay [ { from: 660, to: 960 } ]
- * @param {Object} intervalsGang  [ { from: 100, to: 700 }, { from: 1000, to: 1100 } ]
- * @param {Object} duration 120
- */
 function checkTime(intervalsBankForDay, intervalsGang, duration) {
     var newIntervals = [];
     var banIntervals = [].concat(intervalsBankForDay);
@@ -279,7 +244,6 @@ function checkTime(intervalsBankForDay, intervalsGang, duration) {
     }
     return banIntervals;
 }
-
 function toCommonIntervals(intervalsBank, intervalsGang, duration, days) {
     var result = Object.assign({}, intervalsBank);
     var name = Object.keys(intervalsBank)[0];
